@@ -2,7 +2,7 @@
 The repository for QA challenge 
 
 Please help refer below guidelines to create tests for APIs
-Required tools:
+> Required tools:
  - Postman
  - Newman
  - newman-reporter-htmlextra
@@ -12,7 +12,8 @@ Required tools:
  > Install Newman:
   - Install NodeJs ( https://nodejs.org/en/download)
   - Install newman using command: npm install -g newman
- > Install newman-reporter-htmlextra by using command: npm install -g newman-reporter-htmlextra
+ > Install newman-reporter-htmlextra
+  - Use command: npm install -g newman-reporter-htmlextra
  
  Steps by steps to run tests:
  > Step 1:
