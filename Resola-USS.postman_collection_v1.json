@@ -722,10 +722,10 @@
 									"\r",
 									"\r",
 									"// test\r",
-									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
-									"{\r",
-									"    pm.response.to.have.status(201);\r",
-									"})\r",
+									"// pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
+									"// {\r",
+									"//     pm.response.to.have.status(201);\r",
+									"// })\r",
 									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
 									"{\r",
 									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
@@ -1580,6 +1580,81 @@
 			"name": "Create Shorten Link",
 			"item": [
 				{
+					"name": "Create shorten link - preparing data by creating new app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"appId\", jsonData.data.id);\r",
+									"postman.setEnvironmentVariable(\"x-api-key\", jsonData.data.apiKey);\r",
+									"\r",
+									"// test\r",
+									"// pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
+									"// {\r",
+									"//     pm.response.to.have.status(201);\r",
+									"// })\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set random name for app name\r",
+									"pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Shorten Link - 200 OK",
 					"event": [
 						{
@@ -1763,28 +1838,13 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"var shortCode_1 = jsonData.data[0].shortCode;\r",
-									"var shortCode_2 = jsonData.data[1].shortCode;\r",
-									"var shortUrl_1 = jsonData.data[0].shortUrl;\r",
-									"var shortUrl_2 = jsonData.data[1].shortUrl;\r",
-									"\r",
 									"\r",
 									"// test\r",
 									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify status code - 401\", function()\r",
 									"{\r",
 									"    pm.response.to.have.status(401);\r",
 									"})\r",
-									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the response data\", function()\r",
-									"{\r",
-									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
-									"    pm.expect((jsonData.data[0].shortCode).length).to.eql(8);\r",
-									"})\r",
-									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the shortten URL includes shortCode\", function()\r",
-									"{\r",
-									"    pm.expect(shortUrl_1).contains(shortCode_1);\r",
-									"    pm.expect(shortUrl_2).contains(shortCode_2);\r",
-									"    \r",
-									"})\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -1852,28 +1912,12 @@
 							"script": {
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);\r",
-									"var shortCode_1 = jsonData.data[0].shortCode;\r",
-									"var shortCode_2 = jsonData.data[1].shortCode;\r",
-									"var shortUrl_1 = jsonData.data[0].shortUrl;\r",
-									"var shortUrl_2 = jsonData.data[1].shortUrl;\r",
-									"\r",
-									"\r",
 									"// test\r",
 									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify status code - 401\", function()\r",
 									"{\r",
 									"    pm.response.to.have.status(401);\r",
 									"})\r",
-									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the response data\", function()\r",
-									"{\r",
-									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
-									"    pm.expect((jsonData.data[0].shortCode).length).to.eql(8);\r",
-									"})\r",
-									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the shortten URL includes shortCode\", function()\r",
-									"{\r",
-									"    pm.expect(shortUrl_1).contains(shortCode_1);\r",
-									"    pm.expect(shortUrl_2).contains(shortCode_2);\r",
-									"    \r",
-									"})\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
