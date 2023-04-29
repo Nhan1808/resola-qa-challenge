@@ -15,12 +15,12 @@ Required tools:
  > Install newman-reporter-htmlextra by using command: npm install -g newman-reporter-htmlextra
  
  Steps by steps to run tests:
- Step 1:
+ > Step 1:
  - Export your collections and your testing environment in json files
- Step 2:
+ > Step 2:
  - Run newman command to run tests:
  " newman run your_collections.json - e your_environment.json -r htmlextra"
- Step 3:
+ > Step 3:
  After finishing running test, new folder named 'newman' will be created, it includes the html files that shows testing results.
  
 
