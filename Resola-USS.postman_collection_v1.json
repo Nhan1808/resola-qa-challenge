@@ -1,0 +1,2172 @@
+{
+	"info": {
+		"_postman_id": "31ef1d8a-6639-454e-9c13-cf9e7b4c50ff",
+		"name": "Resola-USS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "693272",
+		"_collection_link": "https://cloudy-capsule-336087.postman.co/workspace/Nhan-Huynh-APIs~1d65fe1c-f1df-42eb-8c20-3ca086440f7c/collection/693272-31ef1d8a-6639-454e-9c13-cf9e7b4c50ff?action=share&creator=693272&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Create App",
+			"item": [
+				{
+					"name": "Create App - 201 Created",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"appId\", jsonData.data.id);\r",
+									"postman.setEnvironmentVariable(\"x-api-key\", jsonData.data.apiKey);\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"    pm.expect((jsonData.data.id).length).to.eql(32);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set random name for app name\r",
+									"pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - appName's length < 3 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify  minlength of name\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.detail[0].message).to.eql(\"must NOT have fewer than 3 characters\");\r",
+									"    pm.expect(jsonData.detail[0].params.limit).to.eql(3);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"12\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - appName's length > 48 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify maxlength of name\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.detail[0].message).to.eql(\"must NOT have more than 48 characters\");\r",
+									"    pm.expect(jsonData.detail[0].params.limit).to.eql(48);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"12345678901234567890123456789012345678901234567890\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - desciption's length < 3 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify minlength of description\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.detail[0].message).to.eql(\"must NOT have fewer than 3 characters\");\r",
+									"    pm.expect(jsonData.detail[0].params.limit).to.eql(3);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - description's length > 128 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify maxlength of deescription\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.detail[0].message).to.eql(\"must NOT have more than 128 characters\");\r",
+									"    pm.expect(jsonData.detail[0].params.limit).to.eql(128);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get App by ID",
+			"item": [
+				{
+					"name": "Get App by ID - preparing data by creating new app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"appId\", jsonData.data.id);\r",
+									"postman.setEnvironmentVariable(\"x-api-key\", jsonData.data.apiKey);\r",
+									"\r",
+									"// test\r",
+									"// pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
+									"// {\r",
+									"//     pm.response.to.have.status(201);\r",
+									"// })\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set random name for app name\r",
+									"pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by ID - 200 OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response status 200\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the application name\", () => {\r",
+									"  var createdAppName = pm.environment.get(\"appName\");  \r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.data.name).to.eql(createdAppName);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{appId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by ID - 401 - Unauthorized - Invalid x-api-key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response status 401\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{appId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by ID - 401 - Unauthorized - invalid appId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response status 401\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}111",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{appId}}111"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by ID - 404 Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response status 404\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/v1/appss/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"appss",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{appId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update App",
+			"item": [
+				{
+					"name": "Update App Detail - prepare data by creating new app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"updateAppId\", jsonData.data.id);\r",
+									"postman.setEnvironmentVariable(\"x-api-key\", jsonData.data.apiKey);\r",
+									"postman.setEnvironmentVariable(\"updateAppName\", jsonData.data.name);\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify status code - 201\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set random name for app name\r",
+									"pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - 200 OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - verify the response data\", function()\r",
+									"{\r",
+									"    // pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{updateAppName}}\",\r\n  \"description\": \"Updated_This app for testing\",\r\n  \"status\": \"enabled\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - 200 OK - lack of status key in body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - verify the response data\", function()\r",
+									"{\r",
+									"    // pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"Updated_This app for testing\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - 401 Unauthorized - Invalid x-api-key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(401);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response data\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.detail.type).to.eql(\"unauthorized\");\r",
+									"  pm.expect(responseJson.detail.msg).to.eql(\"Unauthorized\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"Updated_This app for testing\",\r\n  \"status\": \"enabled\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - 401 Unauthorized - invalid appId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(401);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response data\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.detail.type).to.eql(\"unauthorized\");\r",
+									"  pm.expect(responseJson.detail.msg).to.eql(\"Unauthorized\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}111",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"Updated_This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}111"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - appName's length < 3 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Update APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"12\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create App - appName's length >48 - Error 422",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Update APP - verify status code - 422\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(422);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"12345678901234567890123456789012345678901234567890\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable App - 204 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - DELETE api/v1/apps/{AppId} - Verify the response status 204\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/{{updateAppId}}",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								"{{updateAppId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - Update a disabled app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - verify the response data\", function()\r",
+									"{\r",
+									"    // pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{updateAppName}}\",\r\n  \"description\": \"Deleted_Updated_This app for testing\",\r\n  \"status\": \"enabled\"\r\n  }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Disable App",
+			"item": [
+				{
+					"name": "Disable app - prepare data by creating new App",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"disableAppId\", jsonData.data.id);\r",
+									"postman.setEnvironmentVariable(\"x-api-key\", jsonData.data.apiKey);\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/apps - Create APP - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Set random name for app name\r",
+									"pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{appName}}\",\r\n  \"description\": \"This app for testing\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable App - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - DELETE api/v1/apps/{AppId} - Verify the response status 204\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/{{disableAppId}}",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								"{{disableAppId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get app by ID to verify the disabled app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response status 200\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - GET api/v1/apps/:appId - Verify the response data after disabling\", () => {\r",
+									"  var createdAppName = pm.environment.get(\"appName\");  \r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.expect(responseJson.data.name).to.eql(createdAppName);\r",
+									"  pm.expect(responseJson.data.status).to.eql(\"deleted\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{disableAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Shorten Link",
+			"item": [
+				{
+					"name": "Create Shorten Link - 200 OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var shortCode = jsonData.data.shortCode;\r",
+									"var shortUrl = jsonData.data.shortUrl;\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create Shorten link - verify status code - 200\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"USS - USS - POST api/v1/shorten - Create Shorten link - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect((jsonData.data.shortCode).length).to.eql(8);\r",
+									"})\r",
+									"pm.test(\"USS - USS - POST api/v1/shorten - Create Shorten link - verify the shortten URL includes shortCode\", function()\r",
+									"{\r",
+									"    pm.expect(shortUrl).contains(shortCode);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// // Set random name for app name\r",
+									"// pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"url\": \"https://www.google.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/shorten",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shorten"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Multiple Links",
+			"item": [
+				{
+					"name": "Create Multiple Links - 200 OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var shortCode_1 = jsonData.data[0].shortCode;\r",
+									"var shortCode_2 = jsonData.data[1].shortCode;\r",
+									"var shortUrl_1 = jsonData.data[0].shortUrl;\r",
+									"var shortUrl_2 = jsonData.data[1].shortUrl;\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify status code - 200\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect((jsonData.data[0].shortCode).length).to.eql(8);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the shortten URL includes shortCode\", function()\r",
+									"{\r",
+									"    pm.expect(shortUrl_1).contains(shortCode_1);\r",
+									"    pm.expect(shortUrl_2).contains(shortCode_2);\r",
+									"    \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"url\": \"https://www.google.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/batch",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Multiple Links - Missing appId  - 401 unauthorized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var shortCode_1 = jsonData.data[0].shortCode;\r",
+									"var shortCode_2 = jsonData.data[1].shortCode;\r",
+									"var shortUrl_1 = jsonData.data[0].shortUrl;\r",
+									"var shortUrl_2 = jsonData.data[1].shortUrl;\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify status code - 401\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(401);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect((jsonData.data[0].shortCode).length).to.eql(8);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the shortten URL includes shortCode\", function()\r",
+									"{\r",
+									"    pm.expect(shortUrl_1).contains(shortCode_1);\r",
+									"    pm.expect(shortUrl_2).contains(shortCode_2);\r",
+									"    \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// // Set random name for app name\r",
+									"// pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"url\": \"https://www.google.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/batch",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Multiple Links - Missing x-api-key  - 401 unauthorized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var shortCode_1 = jsonData.data[0].shortCode;\r",
+									"var shortCode_2 = jsonData.data[1].shortCode;\r",
+									"var shortUrl_1 = jsonData.data[0].shortUrl;\r",
+									"var shortUrl_2 = jsonData.data[1].shortUrl;\r",
+									"\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify status code - 401\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(401);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the response data\", function()\r",
+									"{\r",
+									"    pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect((jsonData.data[0].shortCode).length).to.eql(8);\r",
+									"})\r",
+									"pm.test(\"USS - POST api/v1/shorten - Create multiple links - verify the shortten URL includes shortCode\", function()\r",
+									"{\r",
+									"    pm.expect(shortUrl_1).contains(shortCode_1);\r",
+									"    pm.expect(shortUrl_2).contains(shortCode_2);\r",
+									"    \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// // Set random name for app name\r",
+									"// pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"url\": \"https://www.google.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/batch",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Access Shorten URL",
+			"item": [
+				{
+					"name": "Access Shorten url- Create Shorten Link - 200 OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var shortCode = jsonData.data.shortCode;\r",
+									"var shortUrl = jsonData.data.shortUrl;\r",
+									"pm.environment.set(\"shortCode\", shortCode);\r",
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - POST api/v1/shorten - Access shorten url - verify status code - 200\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// // Set random name for app name\r",
+									"// pm.environment.set('appName',\"USS\"+String((new Date()).getTime()).replace(/\\compD/gi,'').substring(8));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"url\": \"https://www.google.com.vn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/shorten",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shorten"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access shorten url - 301",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - GET access shorten url - verify status code - 301\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(301);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var shortCode = pm.environment.get(shortCode);\r",
+									"console.log(\"test short code is: \" +shortCode);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followRedirects": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"url\": \"https://www.google.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/{{shortCode}}",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"{{shortCode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Access shorten url - 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"// test\r",
+									"pm.test(\"USS - GET access shorten url - verify status code - 404\", function()\r",
+									"{\r",
+									"    pm.response.to.have.status(404);\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var shortCode = pm.environment.get(shortCode);\r",
+									"console.log(\"test short code is: \" +shortCode);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followRedirects": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-app-id",
+								"value": "{{appId}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"items\": [\r\n    {\r\n      \"url\": \"https://www.google.com\"\r\n    },\r\n    {\r\n      \"url\": \"https://www.apple.com\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/{{shortCode}}123",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"{{shortCode}}123"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
