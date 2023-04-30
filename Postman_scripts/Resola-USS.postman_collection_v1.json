@@ -1157,6 +1157,145 @@
 					"response": []
 				},
 				{
+					"name": "Disable App - 204",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"USS - DELETE api/v1/apps/{AppId} - Verify the response status 204\", () => {\r",
+									"  pm.expect(pm.response.code).to.eql(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/{{updateAppId}}",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								"{{updateAppId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update App Detail - Update a disabled app",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
+									"  const responseJson = pm.response.json();\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"USS - PUT api/v1/apps/:appId - verify the response data\", function()\r",
+									"{\r",
+									"    // pm.expect(jsonData.status).to.eql(\"success\");\r",
+									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{x-api-key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{updateAppName}}\",\r\n  \"description\": \"Deleted_Updated_This app for testing\",\r\n  \"status\": \"enabled\"\r\n  }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{dev}}/api/v1/apps/:appId",
+							"host": [
+								"{{dev}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"apps",
+								":appId"
+							],
+							"variable": [
+								{
+									"key": "appId",
+									"value": "{{updateAppId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update App Detail - 200 OK - lack of status key in body",
 					"event": [
 						{
@@ -1496,145 +1635,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"name\": \"12345678901234567890123456789012345678901234567890\",\r\n  \"description\": \"This app for testing\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{dev}}/api/v1/apps/:appId",
-							"host": [
-								"{{dev}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"apps",
-								":appId"
-							],
-							"variable": [
-								{
-									"key": "appId",
-									"value": "{{updateAppId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Disable App - 204 Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"USS - DELETE api/v1/apps/{AppId} - Verify the response status 204\", () => {\r",
-									"  pm.expect(pm.response.code).to.eql(204);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "x-api-key",
-								"value": "{{x-api-key}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{dev}}/api/v1/apps/{{updateAppId}}",
-							"host": [
-								"{{dev}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"apps",
-								"{{updateAppId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update App Detail - Update a disabled app",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);\r",
-									"pm.test(\"USS - PUT api/v1/apps/:appId - Verify the response status\", () => {\r",
-									"  const responseJson = pm.response.json();\r",
-									"  pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"USS - PUT api/v1/apps/:appId - verify the response data\", function()\r",
-									"{\r",
-									"    // pm.expect(jsonData.status).to.eql(\"success\");\r",
-									"    pm.expect(jsonData.data.status).to.eql(\"enabled\");\r",
-									"})\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "x-api-key",
-								"value": "{{x-api-key}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"name\": \"{{updateAppName}}\",\r\n  \"description\": \"Deleted_Updated_This app for testing\",\r\n  \"status\": \"deleted\"\r\n  }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
